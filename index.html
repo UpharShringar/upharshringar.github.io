@@ -741,22 +741,26 @@ window.deleteProduct = async function(id) {
   }
 
 };
-  // PRODUCT SHARE LINK KA LOGIC
-async function handleSharedProduct(){
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedId = urlParams.get('product');
-  if(!sharedId) return;
-  // 1.5 sec ruk ke product pe le jayega
-  setTimeout(()=>{
-    const card = document.querySelector(`[data-product-id="${sharedId}"]`);
-    if(card){
-      card.scrollIntoView({behavior:'smooth', block:'center'});
-      card.style.outline = '3px solid #e91e63';
-      card.style.boxShadow = '0 0 20px rgba(233,30,99,0.6)';
-      setTimeout(()=>{ card.style.outline=''; }, 3000);
-    }
-  }, 1800);
-}
+  
+  function handleSharedProduct(){
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedId = urlParams.get('product');
+    if(!sharedId) return;
+    
+    let count = 0;
+    let check = setInterval(()=>{
+      count++;
+      const card = document.querySelector(`[data-product-id="${sharedId}"]`);
+      if(card){
+        clearInterval(check);
+        card.scrollIntoView({behavior:'smooth', block:'center'});
+        card.style.outline = '3px solid #e91e63';
+        card.style.boxShadow = '0 0 20px rgba(233,30,99,0.6)';
+        setTimeout(()=>{ card.style.outline=''; card.style.boxShadow=''; }, 4000);
+      }
+      if(count > 20) clearInterval(check); // 10 sec tak try karega
+    }, 500);
+  }
   async function loadDashboard() {
 
 const products = await getDocs(collection(db, "products"));
@@ -782,7 +786,7 @@ document.getElementById("totalSales").innerText = sales;
     loadProducts();
 loadDashboard();
 handleSharedProduct();
-
+  
 </script>
 <script>
 function toggleCart(){
