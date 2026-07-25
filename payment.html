@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pay Now - Uphar Shringar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+body{font-family:Arial;text-align:center;background:#fff0f5;padding:15px;margin:0}
+.box{background:white;padding:20px;border-radius:15px;max-width:400px;margin:20px auto;box-shadow:0 5px 20px rgba(0,0,0,0.15)}
+#qrcode{display:flex;justify-content:center;margin:20px 0;padding:10px;border:2px dashed #673ab7;border-radius:10px}
+button{padding:14px 25px;background:#673ab7;color:white;border:none;border-radius:8px;font-size:16px;width:100%;margin-top:10px;font-weight:bold;cursor:pointer}
+button.pay{background:#00baf2}
+button.check{background:#009688}
+input{padding:12px;width:90%;margin:10px 0;border:2px solid #ddd;border-radius:8px;font-size:16px;text-align:center}
+.success{color:green;font-weight:bold;display:none;background:#e8f5e9;padding:10px;border-radius:8px;margin-top:15px}
+.failed{color:red;font-weight:bold;display:none;background:#ffebee;padding:10px;border-radius:8px;margin-top:15px}
+.logo{font-size:24px;font-weight:bold;color:#673ab7}
+</style>
+</head>
+<body>
+<div class="box">
+<div class="logo">🎁 Uphar Shringar</div>
+<p>Prepaid Order Payment</p>
+<input type="number" id="amount" placeholder="Amount likho" value="100">
+<p style="margin:0;font-weight:bold">Tumhara QR Code:</p>
+<div id="qrcode"></div>
+<p id="upiText" style="font-size:12px;color:gray">paytmqr6u42je@ptys</p>
+
+<button class="pay" onclick="payNow()">📱 PhonePe / Google Pay / Paytm se Pay Karo</button>
+<button class="check" onclick="showResult()">✅ Payment Check Karo</button>
+
+<p id="successMsg" class="success">✅ Payment Successful! Thank You! Order Confirm Ho Gaya! Screenshot bhej do!</p>
+<p id="failMsg" class="failed">❌ Payment Cancel / Failed! Dobara Try Karo!</p>
+
+<p style="font-size:11px;color:gray;margin-top:20px">Paisa direct paytmqr6u42je@ptys pe jayega</p>
+</div>
+
+<script>
+const myUpiId = "paytmqr6u42je@ptys";
+const myName = "Uphar Shringar";
+
+function makeQR(){
+  const amt = document.getElementById("amount").value || "100";
+  const upiLink = `upi://pay?pa=${myUpiId}&pn=${myName}&am=${amt}&cu=INR&tn=Uphar Shringar Order`;
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), {
+    text: upiLink,
+    width: 200,
+    height: 200
+  });
+}
+
+function payNow(){
+  const amt = document.getElementById("amount").value || "100";
+  const upiLink = `upi://pay?pa=${myUpiId}&pn=${myName}&am=${amt}&cu=INR&tn=Uphar Shringar Order`;
+  window.location.href = upiLink;
+  setTimeout(showResult, 4000);
+}
+
+function showResult(){
+  const isSuccess = confirm("Payment SUCCESSFUL hua kya?\nOK = Success, Cancel = Failed");
+  if(isSuccess){
+    document.getElementById("successMsg").style.display="block";
+    document.getElementById("failMsg").style.display="none";
+  } else {
+    document.getElementById("successMsg").style.display="none";
+    document.getElementById("failMsg").style.display="block";
+  }
+}
+
+document.getElementById("amount").addEventListener("input", makeQR);
+makeQR();
+</script>
+</body>
+</html>
