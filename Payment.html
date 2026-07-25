@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pay Now - Uphar Shringar</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+body{font-family:Arial;text-align:center;background:#fff5f5;padding:20px}
+.box{background:white;padding:20px;border-radius:15px;max-width:400px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,0.1)}
+#qrcode{display:flex;justify-content:center;margin:20px 0}
+button{padding:12px 25px;background:#673ab7;color:white;border:none;border-radius:8px;font-size:16px;width:100%;margin-top:10px}
+input{padding:10px;width:90%;margin:5px;border:1px solid #ccc;border-radius:8px}
+.success{color:green;font-weight:bold;display:none}
+.failed{color:red;font-weight:bold;display:none}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Uphar Shringar - Prepaid Order</h2>
+<input type="number" id="amount" placeholder="Amount likho (Ex: 500)" value="100">
+<p>Apna UPI QR Scan karo</p>
+<div id="qrcode"></div>
+<p id="upiText" style="font-size:12px;color:gray"></p>
+
+<button onclick="payNow()">Google Pay / PhonePe se Pay Karo</button>
+<button onclick="checkPayment()" style="background:#009688">Payment Ho Gaya? Check Karo</button>
+
+<p id="successMsg" class="success">✅ Payment Successful! Order Confirm Ho Gaya!</p>
+<p id="failMsg" class="failed">❌ Payment Cancel / Failed! Dobara try karo!</p>
+</div>
+
+<script>
+
+const myUpiId = "YOUR_UPI_ID paytmqr6u42je@ptys
+const myName = "ibran alam ";
+
+let qr;
+
+function makeQR(){
+  const amt = document.getElementById("amount").value || "100";
+  const upiLink = `upi://pay?pa=${myUpiId}&pn=${myName}&am=${amt}&cu=INR`;
+  document.getElementById("upiText").innerText = myUpiId;
+  document.getElementById("qrcode").innerHTML = "";
+  qr = new QRCode(document.getElementById("qrcode"), {
+    text: upiLink,
+    width: 200,
+    height: 200
+  });
+}
+
+function payNow(){
+  const amt = document.getElementById("amount").value;
+  const upiLink = `upi://pay?pa=${myUpiId}&pn=${myName}&am=${amt}&cu=INR`;
+  window.location.href = upiLink;
+  
+  // 5 second baad pucho kya hua
+  setTimeout(()=>{
+    const ok = confirm("Payment Successful hua kya?");
+    if(ok){
+      document.getElementById("successMsg").style.display="block";
+      document.getElementById("failMsg").style.display="none";
+    } else {
+      document.getElementById("successMsg").style.display="none";
+      document.getElementById("failMsg").style.display="block";
+    }
+  }, 5000);
+}
+
+function checkPayment(){
+  payNow();
+}
+
+document.getElementById("amount").addEventListener("input", makeQR);
+makeQR();
+</script>
+</body>
+</html>
