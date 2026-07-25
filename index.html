@@ -257,12 +257,20 @@ style="width:100%;padding:10px;margin-bottom:15px;">
       <input id="fullname" type="text" placeholder="Full Name" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
       <input id="mobile" type="tel" placeholder="Mobile Number" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
       <textarea id="address" placeholder="Full Address" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;"></textarea>
-      <select id="payment" onchange="showPaymentQR()"style="width:100%; padding:10px; margin:8px 0; border-radius:5px;"><option>Cash on Delivery</option><option>Google Pay</option><option>PhonePe</option><option>Paytm</option></select>
-      <div id="paymentQR" style="display:none; text-align:center; margin:15px 0;">
+      <select id="payment" onchange="showPaymentQR()" style="width:100%; padding:10px; margin:8px 0; border-radius:5px;">
+  <option value="">Select Payment Method</option>
+  <option value="COD">Cash on Delivery</option>
+  <option value="Google Pay">Google Pay</option>
+  <option value="PhonePe">PhonePe</option>
+  <option value="Paytm">Paytm</option>
+</select>
+
+<div id="paymentQR" style="display:none; text-align:center; margin:15px 0; padding:15px; border:2px dashed #581845; border-radius:10px; background:#fff0f5;">
   <h3>📱 Payment QR Code</h3>
-  <img src="IbranAlam.jpg">
-       style="width:250px; max-width:100%; border:3px solid #581845; border-radius:10px;">
+  <p>Total: ₹<span id="qrAmount">0</span> - QR Scan Karo</p>
+  <img src="IbranAlam.jpg" style="width:250px; max-width:100%; border:3px solid #581845; border-radius:10px;">
   <p>UPI ID: paytmqr6u42je@ptys</p>
+  <p style="font-size:12px; color:green;"><b>Ibran Alam - 7256050678</b></p>
 </div>
       <button onclick="placeOrder()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px;">✅ Place Order</button>
       function showPaymentQR(){
