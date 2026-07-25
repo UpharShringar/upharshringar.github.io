@@ -252,7 +252,6 @@ style="width:100%;padding:10px;margin-bottom:15px;">
     <p style="font-size:18px;"><b>Total: ₹<span id="cartTotal">0</span></b></p>
     <button onclick="clearCart()" style="width:100%; padding:12px; background:red; color:white; border:none; border-radius:8px; margin-top:10px;">🗑️ Clear Cart</button>
     <button onclick="showOrderForm()" style="width:100%; padding:12px; background:#4CAF50; color:white; border:none; border-radius:8px; margin-top:10px;">✅ Order Now</button>
-    
     <div id="orderFormDiv" style="display:none; border-top:2px solid #eee; margin-top:15px; padding-top:15px;">
       <h3>📦 Order Details</h3>
       <input id="fullname" type="text" placeholder="Full Name" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
@@ -260,7 +259,18 @@ style="width:100%;padding:10px;margin-bottom:15px;">
       <textarea id="address" placeholder="Full Address" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;"></textarea>
       <select id="payment" style="width:100%; padding:10px; margin:8px 0; border-radius:5px;"><option>Cash on Delivery</option><option>Google Pay</option><option>PhonePe</option><option>Paytm</option></select>
       <button onclick="placeOrder()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px;">✅ Place Order</button>
+      function showPaymentQR(){
+  const payment = document.getElementById("payment").value;
+  const qrBox = document.getElementById("paymentQR");
+
+  if(payment === "Google Pay" || payment === "PhonePe" || payment === "Paytm"){
+    qrBox.style.display = "block";
+  } else {
+    qrBox.style.display = "none";
+  }
+}
     </div>
+    
   </div>
 </div>
 <div id="cartOverlay" onclick="toggleCart()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9998;"></div>
@@ -421,7 +431,7 @@ function toggleMenu(){
   }
 }
     window.shareProduct = async function(id, name, price){
-  const shareUrl = ".  https://upharshringar.github.io/Uphar-Shringar/?product=" + id;
+  const shareUrl = ".  https://upharshringar.github.io/product=" + id;
   const shareText = `🛍️ ${name}\n💰 Price: ₹${price}\n👉 Order karo: ${shareUrl}\n\nUphar Shringar & Gifts - Narkatiaganj`;
 
   if(navigator.share){
@@ -651,7 +661,6 @@ if(isAdmin && adminList){
       <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin:8px 0;"><button onclick="let q=document.getElementById('qty_${doc.id}'); if(parseInt(q.innerText)>1) q.innerText=parseInt(q.innerText)-1" style="width:32px; height:32px; border-radius:50%; border:1px solid #e91e63; background:pink;">-</button><span id="qty_${doc.id}" style="font-weight:bold;">1</span><button onclick="let q=document.getElementById('qty_${doc.id}'); q.innerText=parseInt(q.innerText)+1" style="width:32px; height:32px; border-radius:50%; border:1px solid #e91e63; background:#e91e63; color:white;">+</button></div>
       <button onclick="let q=parseInt(document.getElementById('qty_${doc.id}').innerText)||1; addToCart('${p.name} ('+document.getElementById('selected_${doc.id}').value+')', Number(document.getElementById('selectedOffer_${doc.id}').value), q)" style="margin-top:8px;width:100%;padding:10px;background:#e91e63;color:white;border:none;border-radius:5px;">🛒 Add to Cart</button>
       <button onclick="let q=parseInt(document.getElementById('qty_${doc.id}').innerText)||1; buyNow('${p.name} ('+document.getElementById('selected_${doc.id}').value+')', Number(document.getElementById('selectedOffer_${doc.id}').value), q)" style="margin-top:8px;width:100%;padding:10px;background:#4CAF50;color:white;border:none;border-radius:5px;">⚡ Buy Now</button>
-      <button onclick="let amt = document.getElementById('selectedOffer_${doc.id}').value; window.location.href='payment.html?amount='+amt" style="margin-top:8px;width:100%;padding:10px;background:#00baf2;color:white;border:none;border-radius:5px;">💳 Prepaid Order - QR Pay</button>
     </div>`;
   });
 } 
