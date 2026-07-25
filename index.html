@@ -257,13 +257,23 @@ style="width:100%;padding:10px;margin-bottom:15px;">
       <input id="fullname" type="text" placeholder="Full Name" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
       <input id="mobile" type="tel" placeholder="Mobile Number" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
       <textarea id="address" placeholder="Full Address" style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px;"></textarea>
-      <select id="payment" onchange="showPaymentQR()" style="width:100%; padding:10px; margin:8px 0; border-radius:5px;">
-  <option value="">Select Payment Method</option>
-  <option value="COD">Cash on Delivery</option>
-  <option value="Google Pay">Google Pay</option>
-  <option value="PhonePe">PhonePe</option>
-  <option value="Paytm">Paytm</option>
+      <select id="payment" onchange="openUPIPayment()" style="width:100%; padding:12px; margin:8px 0; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+<option value="">Select Payment Method</option>
+<option value="COD">💵 Cash on Delivery</option>
+<option value="Google Pay">🔵 Google Pay</option>
+<option value="PhonePe">🟣 PhonePe</option>
+<option value="Paytm">🔵 Paytm</option>
 </select>
+<div id="paymentQR" style="display:none; text-align:center; margin:15px 0; padding:15px; border:2px dashed #581845; border-radius:12px; background:#fff0f5;">
+<h3>📱 Payment QR Code</h3>
+<p>Total: ₹<span id="qrAmount">0</span></p>
+<img src="IbranAlam.jpg" style="width:250px; border:3px solid #581845; border-radius:10px;">
+<p>UPI ID: paytmqr6u42je@ptys</p>
+<p style="color:green;"><b>Ibran Alam - 7256050678</b></p>
+<button onclick="payWithUPI()" style="width:100%; padding:12px; background:#00baf2; color:white; border:none; border-radius:8px; margin-top:10px; font-size:16px; font-weight:bold;">Pay ₹<span class="payAmount">0</span> Now</button>
+<button onclick="confirmPayment()" style="width:100%; padding:10px; background:green; color:white; border:none; border-radius:8px; margin-top:8px;">✅ Payment Ho Gaya - Place Order</button>
+<button onclick="cancelPayment()" style="width:100%; padding:8px; background:red; color:white; border:none; border-radius:8px; margin-top:8px;">❌ Cancel</button>
+</div>
 <div id="paymentQR" style="display:none; text-align:center; margin:15px 0; padding:15px; border:2px dashed #581845; border-radius:10px; background:#fff0f5;">
 <h3>📱 Payment QR Code</h3>
 <p>Total: ₹<span id="qrAmount">0</span> - QR Scan Karo</p>
@@ -279,17 +289,39 @@ style="width:100%;padding:10px;margin-bottom:15px;">
 </div>
 </div>
   <script>
-function showPaymentQR(){
+<script>
+function openUPIPayment(){
 var payment = document.getElementById("payment").value;
 var qrBox = document.getElementById("paymentQR");
-var total = document.getElementById("cartTotal").innerText;
+var total = document.getElementById("cartTotal").innerText || "1";
 document.getElementById("qrAmount").innerText = total;
+document.querySelectorAll(".payAmount").forEach(e=>e.innerText=total);
+
 if(payment === "Google Pay" || payment === "PhonePe" || payment === "Paytm"){
 qrBox.style.display = "block";
+// Direct UPI App khol do - Flipkart jaisa
+setTimeout(()=>{ payWithUPI(); }, 800);
 } else {
 qrBox.style.display = "none";
 }
+function payWithUPI(){
+var total = document.getElementById("cartTotal").innerText || "1";
+var pa = "paytmqr6u42je@ptys";
+var pn = "Ibran Alam";
+var upiLink = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${total}&cu=INR&tn=Uphar Shringar Order`;
+window.location.href = upiLink;
 }
+function confirmPayment(){
+alert("✅ Payment Verified! Order Place ho raha hai!");
+placeOrder();
+}
+function cancelPayment(){
+document.getElementById("paymentQR").style.display = "none";
+document.getElementById("payment").value = "";
+alert("❌ Payment Cancel - Order nahi hua!");
+}
+function showPaymentQR(){ openUPIPayment(); }
+</script>
 </script>
   
 <hr>
