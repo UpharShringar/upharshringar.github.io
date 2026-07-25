@@ -847,6 +847,16 @@ function placeOrder(){
     alert('Full Name, Mobile, Address bharo!');
     return;
   }
+  var pay = document.getElementById('payment').value;
+if(pay==''){
+alert('Payment Method Select Karo!');
+return;
+}
+  if(pay !== 'COD'){
+if(!confirm('QR se payment kar diya? OK = Order Confirm')){
+return;
+}
+  }
   alert('✅ Order Placed! Thank you '+name);
   clearCart();
   toggleCart();
