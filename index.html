@@ -273,21 +273,26 @@ style="width:100%;padding:10px;margin-bottom:15px;">
   <p style="font-size:12px; color:green;"><b>Ibran Alam - 7256050678</b></p>
 </div>
       <button onclick="placeOrder()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px;">✅ Place Order</button>
-      function showPaymentQR(){
-  const payment = document.getElementById("payment").value;
-  const qrBox = document.getElementById("paymentQR");
-
-  if(payment === "Google Pay" || payment === "PhonePe" || payment === "Paytm"){
-    qrBox.style.display = "block";
-  } else {
-    qrBox.style.display = "none";
-  }
-}
     </div>
     
   </div>
 </div>
 <div id="cartOverlay" onclick="toggleCart()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9998;"></div>
+  </div>
+</div>
+</div>
+function showPaymentQR(){
+const payment = document.getElementById("payment").value;
+const qrBox = document.getElementById("paymentQR");
+const total = document.getElementById("cartTotal").innerText;
+document.getElementById("qrAmount").innerText = total;
+if(payment === "Google Pay" || payment === "PhonePe" || payment === "Paytm"){
+qrBox.style.display = "block";
+} else {
+qrBox.style.display = "none";
+}
+}
+  
 </script>
 <hr>
   <div id="adminPanel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:#fff5f7; z-index:9999; overflow-y:auto; padding:15px; box-sizing:border-box;">
