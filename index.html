@@ -470,17 +470,29 @@ function toggleMenu(){
     menu.style.width="280px";
   }
 }
-    window.shareProduct = async function(id, name, price){
-  https://upharshringar.github.io/product=" + id; /product=" + id;
-  const shareText = `🛍️ ${name}\n💰 Price: ₹${price}\n👉 Order karo: ${shareUrl}\n\nUphar Shringar & Gifts - Narkatiaganj`;
+    window.shareProduct = function(id, name, price){
+  const shareUrl = "https://upharshringar.github.io/?product=" + id;
+  const shareText = "🛍️ " + name + "\n💰 Price: ₹" + price + "\n👉 Order karo: " + shareUrl + "\n\nUphar Shringar & Gifts - Narkatiaganj";
 
-  if(navigator.share){
-    try {
-      await navigator.share({ title: name, text: shareText, url: shareUrl });
-    } catch(e){}
+  // Agar mobile ka native share hai to
+  if (navigator.share) {
+    navigator.share({ title: name, text: shareText, url: shareUrl }).catch(function(){
+      // agar user cancel kare to copy kar do
+      copyFallback(shareText, shareUrl);
+    });
   } else {
-    await navigator.clipboard.writeText(shareText);
-    alert("✅ Link Copied! WhatsApp pe share karo:\n\n" + shareUrl);
+    copyFallback(shareText, shareUrl);
+  }
+
+  function copyFallback(text, url){
+    // Purana tarika se copy - sab mobile me kaam karega
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert("✅ Link Copied! WhatsApp pe share karo:\n\n" + url);
   }
 }
 function openMenu(){
