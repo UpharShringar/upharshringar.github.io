@@ -470,14 +470,15 @@ function toggleMenu(){
     menu.style.width="280px";
   }
 }
-    window.shareProduct = function(id, name, price){
+  window.shareProduct = function(id, name, price){
   const shareUrl = "https://upharshringar.github.io/?product=" + id;
-  const shareText = "🛍️ " + name + "\n💰 Price: ₹" + price + "\n👉 Order karo: " + shareUrl + "\n\nUphar Shringar & Gifts - Narkatiaganj";
+  const shopUrl = "https://upharshringar.github.io/";
+  const shareText = "🛍️ " + name + "\n💰 Price: ₹" + price + "\n👉 Order karo: " + shareUrl + "\n\nUphar Shringar & Gifts - Narkatiaganj\n" + shopUrl;
 
-  // Agar mobile ka native share hai to
   if (navigator.share) {
-    navigator.share({ title: name, text: shareText, url: shareUrl }).catch(function(){
-      // agar user cancel kare to copy kar do
+    navigator.share({ title: name, text: shareText }).then(function(){
+      console.log("Shared");
+    }).catch(function(){
       copyFallback(shareText, shareUrl);
     });
   } else {
@@ -485,7 +486,6 @@ function toggleMenu(){
   }
 
   function copyFallback(text, url){
-    // Purana tarika se copy - sab mobile me kaam karega
     const el = document.createElement('textarea');
     el.value = text;
     document.body.appendChild(el);
