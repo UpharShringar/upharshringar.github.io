@@ -280,21 +280,53 @@ style="width:100%;padding:10px;margin-bottom:15px;">
 </div>
 
 <script>
+<script>
 function openUPIPayment(){
 var pay=document.getElementById("payment").value;
 var box=document.getElementById("paymentQR");
 var total=document.getElementById("cartTotal").innerText||"1";
+// Fix Total 0 ka issue
+if(total=="0" || total==""){ total="1"; }
 document.getElementById("qrAmount").innerText=total;
 var spans=document.querySelectorAll(".payAmount");
 for(var i=0;i<spans.length;i++){spans[i].innerText=total;}
 if(pay==="Google Pay"||pay==="PhonePe"||pay==="Paytm"){box.style.display="block";}
 else{box.style.display="none";}
 }
+
 function payWithUPI(){
 var total=document.getElementById("cartTotal").innerText||"1";
-var link="upi://pay?pa=paytmqr6u42je@ptys&pn=Ibran%20Alam&am="+total+"&cu=INR&tn=Uphar Shringar";
-window.location.href=link;
+if(total=="0" || total==""){ total="1"; }
+var pay=document.getElementById("payment").value;
+var pa="paytmqr6u42je@ptys";
+var pn="Ibran Alam";
+var am=total;
+var tn="Uphar Shringar Order";
+
+// Alag alag App ke liye alag Link - Ab Paytm select to Paytm khulega!
+var upiLink="";
+if(pay==="PhonePe"){
+upiLink="phonepe://pay?pa="+pa+"&pn="+encodeURIComponent(pn)+"&am="+am+"&cu=INR";
 }
+else if(pay==="Google Pay"){
+upiLink="tez://upi/pay?pa="+pa+"&pn="+encodeURIComponent(pn)+"&am="+am+"&cu=INR";
+}
+else if(pay==="Paytm"){
+upiLink="paytmmp://pay?pa="+pa+"&pn="+encodeURIComponent(pn)+"&am="+am+"&cu=INR";
+}
+else{
+upiLink="upi://pay?pa="+pa+"&pn="+encodeURIComponent(pn)+"&am="+am+"&cu=INR&tn="+tn;
+}
+
+// App kholo
+window.location.href=upiLink;
+
+// Agar App nahi khula to 1 sec baad normal UPI kholo
+setTimeout(function(){
+window.location.href="upi://pay?pa="+pa+"&pn="+encodeURIComponent(pn)+"&am="+am+"&cu=INR&tn="+tn;
+}, 1200);
+}
+
 function confirmPayment(){alert("✅ Payment Done!"); placeOrder();}
 function cancelPayment(){document.getElementById("paymentQR").style.display="none"; document.getElementById("payment").value="";}
 function showPaymentQR(){openUPIPayment();}
