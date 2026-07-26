@@ -570,29 +570,7 @@ window.placeOrder = async function () {
     alert("❌ " + e.message);
   }
 };
-
-    await addDoc(collection(db, "orders"), {
-      customerName: name,
-      mobile: phone,
-      address: address,
-      payment: payment,
-      cart: cart,
-      total: total,
-      createdAt: new Date().toISOString()
-    });
-
-    alert("✅ Order Placed Successfully!");
-
-    clearCart();
-
-    document.getElementById("fullname").value = "";
-    document.getElementById("mobile").value = "";
-    document.getElementById("address").value = "";
-
-  } catch (e) {
-    alert("❌ " + e.message);
-    }
-  };
+    
     window.uploadProduct = async function () {
 
 const name = document.getElementById("productName").value;
