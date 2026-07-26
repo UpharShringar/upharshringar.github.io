@@ -472,9 +472,6 @@ function toggleMenu(){
 }
   window.shareProduct = function(id, name, price){
   const shareUrl = "https://upharshringar.github.io/?product=" + id;
-  const shopUrl = "https://upharshringar.github.io/";
-  const shareText = "🛍️ " + name + "\n💰 Price: ₹" + price + "\n👉 Order karo: " + shareUrl + "\n\nUphar Shringar & Gifts - Narkatiaganj\n" + shopUrl;
-
   if (navigator.share) {
     navigator.share({ title: name, text: shareText }).then(function(){
       console.log("Shared");
