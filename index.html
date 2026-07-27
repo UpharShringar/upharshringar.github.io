@@ -163,16 +163,15 @@ style="padding:10px 15px;background:#e91e63;color:#fff;border:none;border-radius
 <div style="padding:20px;font-size:22px;font-weight:bold;background:#e91e63;color:white;">
 ☰ Menu
 <span
-onclick="toggleMenu()"
+onclick="closeMenu()"
 style="float:right;cursor:pointer;">✖</span>
 </div>
 
 <a href="javascript:void(0)"
 onclick="
-toggleMenu();
+onclick="closeMenu();
 document.getElementById('adminLogin').style.display='block';
-document.getElementById('adminPassword').focus();
-"
+document.getElementById('adminPassword').focus();"
 style="display:block;padding:15px;text-decoration:none;color:black;">
 🔐 Admin Login
 </a>
