@@ -316,82 +316,70 @@ function showPaymentQR(){openUPIPayment();}
 </script>
   
 <hr>
-  <div id="adminPanel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:#fff5f7; z-index:9999; overflow-y:auto; padding:15px; box-sizing:border-box;">
-    <div id="dashboard"
-style="
-background:#fff;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-box-shadow:0 2px 8px rgba(0,0,0,.2);">
+<div id="adminPanel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:#fff5f7; z-index:9999; overflow-y:auto; padding:15px; box-sizing:border-box;">
+  <div id="dashboard" style="background:#fff; padding:15px; border-radius:10px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,.2);">
+    <h2>📊 Admin Dashboard</h2>
+    <p>📦 Products : <b id="totalProducts">0</b></p>
+    <p>🛒 Orders : <b id="totalOrders">0</b></p>
+    <p>👥 Customers : <b id="totalCustomers">0</b></p>
+    <p>💰 Sales : ₹<b id="totalSales">0</b></p>
+  </div>
 
-<h2>📊 Admin Dashboard</h2>
-
-<p>📦 Products : <b id="totalProducts">0</b></p>
-
-<p>🛒 Orders : <b id="totalOrders">0</b></p>
-
-<p>👥 Customers : <b id="totalCustomers">0</b></p>
-
-<p>💰 Sales : ₹<b id="totalSales">0</b></p>
-
-    </div>
-
-<h2>🛠 Admin Product Upload</h2>
-
-<input type="text" id="productName" placeholder="Product Name"><br><br>
-<input type="text" id="size1" placeholder="Size 1"><br><br>
-<input type="number" id="price1" placeholder="Price"><br><br>
-<input type="number" id="offer1" placeholder="Offer Price"><br><br>
-
-<input type="text" id="size2" placeholder="Size 2"><br><br>
-<input type="number" id="price2" placeholder="Price 2"><br><br>
-<input type="number" id="offer2" placeholder="Offer Price 2"><br><br>
-    
-<input type="text" id="size3" placeholder="Size 3"><br><br>
-<input type="number" id="price3" placeholder="Price 3"><br><br>  
-<input type="number" id="offer3" placeholder="Offer Price 3"><br><br>
-<select id="productCategory">
-  <option value="">📂 All Categories</option>
-    <option value="1 Gram Jewellery">🪙 1 Gram jewellery</option>
-  <option value="Eyerings">👂 Eyerings</option>
-  <option value="Purse">👜 Purse</option>
-  <option value="Lipstick">💄 Lipstick</option>
-  <option value="Foundation">🧴 Foundation</option>
-  <option value="Compact">🪞 Compact</option>
-  <option value="Face Powder">🌸 Face Powder</option>
-  <option value="Face Cream">🧴 Face Cream</option>
-  <option value="Face Wash">🫧 Face Wash</option>
-  <option value="Face Serum">💧 Face Serum</option>
-  <option value="Moisturizer">🥛 Moisturizer</option>
-  <option value="Sunscreen">☀️ Sunscreen</option>
-  <option value="Primer">✨ Primer</option>
-  <option value="BB Cream">🎀 BB Cream</option>
-  <option value="Concealer">🎨 Concealer</option>
-  <option value="Blush">🌹 Blush</option>
-  <option value="Highlighter">✨ Highlighter</option>
-  <option value="Kajal">🖊 Kajal</option>
-  <option value="Eyeliner Mascara">👁 Eyeliner Mascara</option>
-  <option value="Eyeshadow">🎨 Eyeshadow</option>
-  <option value="Nail Polish">💅 Nail Polish</option>
-  <option value="Perfume">🌸 Perfume</option>
-  <option value="Deodorant">🧴 Deodorant</option>
-  <option value="Soap">🧼 Soap</option>
-  <option value="Shampoo">🧴 Shampoo</option>
-  <option value="Conditioner">💆 Conditioner</option>
-  <option value="Hair Oil">🥥 Hair Oil</option>
-  <option value="Hair Color">🎨 Hair Color</option>
-  <option value="Hair Accessories">🎀 Hair Accessories</option>
-  <option value="Bangles">💍 Bangles</option>
-  <option value="Jewellery">📿 Jewellery</option>
-  <option value="Gift Items">🎁 Gift Items</option>
-  <option value="Other">📦 Other</option>
-</select><br><br>
-<input type="file" id="productImage"><br><br>
-<input type="number" id="productOrder" placeholder="Display Order - 1 = Sabse Upar" style="width:95%; padding:10px;"><br><br>
-<button onclick="uploadProduct()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px; font-weight:bold; font-size:16px;">📤 Upload Product</button><br><br>
-<button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; padding:10px; background:red; color:white; border:none; border-radius:8px;">❌ Close Admin Panel</button>
-<div id="adminProductList" style="margin-top:20px;"></div>
+  <h2>🛠️ Admin Product Upload</h2>
+  <input type="text" id="productName" placeholder="Product Name"><br><br>
+  <input type="text" id="size1" placeholder="Size 1"><br><br>
+  <input type="number" id="price1" placeholder="Price"><br><br>
+  <input type="number" id="offer1" placeholder="Offer Price"><br><br>
+  
+  <input type="text" id="size2" placeholder="Size 2"><br><br>
+  <input type="number" id="price2" placeholder="Price 2"><br><br>
+  <input type="number" id="offer2" placeholder="Offer Price 2"><br><br>
+  
+  <input type="text" id="size3" placeholder="Size 3"><br><br>
+  <input type="number" id="price3" placeholder="Price 3"><br><br>
+  <input type="number" id="offer3" placeholder="Offer Price 3"><br><br>
+  
+  <select id="productCategory">
+    <option value="">📁 All Categories</option>
+    <option value="1 Gram Jewellery">💛 1 Gram jewellery</option>
+    <option value="Eyerings">👂 Eyerings</option>
+    <option value="Purse">👜 Purse</option>
+    <option value="Lipstick">💄 Lipstick</option>
+    <option value="Foundation">🧴 Foundation</option>
+    <option value="Compact">🪞 Compact</option>
+    <option value="Face Powder">🌸 Face Powder</option>
+    <option value="Face Cream">🧴 Face Cream</option>
+    <option value="Face Wash">🫧 Face Wash</option>
+    <option value="Face Serum">💧 Face Serum</option>
+    <option value="Moisturizer">🧴 Moisturizer</option>
+    <option value="Sunscreen">☀️ Sunscreen</option>
+    <option value="Primer">✨ Primer</option>
+    <option value="BB Cream">🎀 BB Cream</option>
+    <option value="Concealer">🎨 Concealer</option>
+    <option value="Blush">🌹 Blush</option>
+    <option value="Highlighter">✨ Highlighter</option>
+    <option value="Kajal">🖊️ Kajal</option>
+    <option value="Perfume">🌸 Perfume</option>
+    <option value="Deodorant">🧴 Deodorant</option>
+    <option value="Soap">🧼 Soap</option>
+    <option value="Shampoo">🧴 Shampoo</option>
+    <option value="Conditioner">💆 Conditioner</option>
+    <option value="Hair Oil">🍩 Hair Oil</option>
+    <option value="Hair Color">🎨 Hair Color</option>
+    <option value="Hair Accessories">🎀 Hair Accessories</option>
+    <option value="Bangles">💍 Bangles</option>
+    <option value="Jewellery">🔍 Jewellery</option>
+    <option value="Gift Items">🎁 Gift Items</option>
+    <option value="Other">📦 Other</option>
+  </select><br><br>
+  
+  <input type="file" id="productImage"><br><br>
+  <input type="number" id="productOrder" placeholder="Display Order - 1 = Sabse Upar" style="width:95%; padding:10px;"><br><br>
+  <button onclick="uploadProduct()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px; font-weight:bold;">📤 Upload Product</button><br><br>
+  <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; padding:10px; background:red; color:white; border:none; border-radius:8px;">❌ Close Panel</button>
+  
+  <div id="adminProductList" style="margin-top:20px;"></div>
+</div>
   <script>
   window.isAdmin = false;
 
