@@ -316,7 +316,7 @@ function showPaymentQR(){openUPIPayment();}
 </script>
   
 <hr>
-  <div id="adminPanel" style="display:block; position:fixed; top:0; left:0; width:100%; height:100vh; background:#fff5f7; z-index:9999; overflow-y:auto; padding:15px; box-sizing:border-box;">
+  <div id="adminPanel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background:#fff5f7; z-index:9999; overflow-y:auto; padding:15px; box-sizing:border-box;">
     <div id="dashboard"
 style="
 background:#fff;
@@ -388,8 +388,9 @@ box-shadow:0 2px 8px rgba(0,0,0,.2);">
   <option value="Other">📦 Other</option>
 </select><br><br>
 <input type="file" id="productImage"><br><br>
-<input type="number" id="productOrder" placeholder="Display Order - 1 = Sabse Upar" style="width:95%; padding:10px; margin:10px 0;"><br><br>
-<button onclick="uploadProduct()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px; font-weight:bold;">🚀 Upload Product</button>
+<input type="number" id="productOrder" placeholder="Display Order - 1 = Sabse Upar" style="width:95%; padding:10px;"><br><br>
+<button onclick="uploadProduct()" style="width:100%; padding:12px; background:#581845; color:white; border:none; border-radius:8px; font-weight:bold; font-size:16px;">📤 Upload Product</button><br><br>
+<button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; padding:10px; background:red; color:white; border:none; border-radius:8px;">❌ Close Admin Panel</button>
 <div id="adminProductList" style="margin-top:20px;"></div>
   <script>
   window.isAdmin = false;
@@ -472,7 +473,8 @@ function toggleMenu(){
 }
   window.shareProduct = function(id, name, price){
   const shareUrl = "https://upharshringar.github.io/?product=" + id;
-  if (navigator.share) {
+const shareText = "🛍️ " + name + "\n💰 Price: ₹" + price + "\n👉 Order karo: " + shareUrl;
+if (navigator.share) {
     navigator.share({ title: name, text: shareText }).then(function(){
       console.log("Shared");
     }).catch(function(){
