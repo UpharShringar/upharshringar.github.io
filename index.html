@@ -228,7 +228,6 @@ onkeyup="loadProducts()"
 style="width:100%;padding:10px;margin-bottom:15px;">
 <div id="products" class="products">
 </div>  
-</script>
    <footer style="background:#581845; color:white; text-align:center; padding:20px 15px; margin-top:40px; font-size:14px;">
   <p style="margin:5px 0;">© 2024 Uphar Shringar & Gifts. All Rights Reserved.</p>
   <p style="margin:5px 0; font-size:12px; opacity:0.8;">Narkatiaganj, Bihar | 📞 7256050678 or 9973750678</p>
@@ -680,10 +679,10 @@ const p = doc;
     const validSizes = p.sizes? p.sizes.filter(s => s && s.size && String(s.size).trim()!== "") : [];
     const first = validSizes.length > 0? validSizes[0] : {size: "", price: p.price, offer: p.offerPrice || p.price};
 if(isAdmin && adminList){
-  adminList.innerHTML += `<div style="background:white; padding:8px; margin:5px 0; display:flex; gap:8px; align-items:center;"><img src="${p.image}" style="width:40px; height:40px;"><span style="flex:1;">${p.name} (Order:${p.order||999})</span><button onclick="editProduct('${doc.id}')" style="background:blue; color:white;">✏️</button><button onclick="deleteProduct('${doc.id}')" style="background:red; color:white;">🗑️</button></div>`;
+adminList.innerHTML += `<div style="background:white; padding:8px; margin:5px 0; display:flex; gap:8px; align-items:center;"><img src="${p.image}" style="width:40px; height:40px; object-fit:contain;"><span style="flex:1;">${p.name} (Order:${p.order||999})</span><button onclick="editProduct('${p.id}')" style="background:blue; color:white;">✏️</button><button onclick="deleteProduct('${p.id}')" style="background:red; color:white;">🗑️</button></div>`;
 }
     products.innerHTML += `
-    <div class="card" data-product-id="${doc.id}" style="background:#fff; border-radius:12px; padding:12px;
+<div class="card" data-product-id="${doc.id}" style="background:#fff; border-radius:12px; padding:12px; position:relative;">
 <div style="position:relative;">
 <button onclick="shareProduct('${doc.id}', '${p.name}', ${first.offer})" style="position:absolute; top:8px; right:8px; z-index:10; background:white; border:none; width:40px; height:40px; border-radius:50%; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg">
@@ -875,12 +874,6 @@ function showOrderForm(){
   document.getElementById('orderFormDiv').scrollIntoView({behavior:'smooth'});
 }
 
-function placeOrder(){
-  
-  alert('✅ Order Placed! Thank you '+name);
-  clearCart();
-  toggleCart();
-}
 </script>
 
 </body>
