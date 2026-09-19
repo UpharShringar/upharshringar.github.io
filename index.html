@@ -367,11 +367,31 @@ ${validSizes.map(s=>`<button onclick="document.getElementById('selected_${doc.id
   });
 }
 window.editProduct = async function(id){
-  const name=prompt("Product Name"); if(name===null) return;
-  const price=prompt("Price"); if(price===null) return;
-  const offerPrice=prompt("Offer Price"); if(offerPrice===null) return;
-  const category=prompt("Category","Other");
-  try{ await updateDoc(doc(db,"products",id),{name:name,category:category,price:Number(price),offerPrice:Number(offerPrice)}); alert("✅ Product Updated"); loadProducts(); }catch(e){ alert("❌ "+e.message); }
+  try {
+    // Pehle purana data le lo taki prompt me old value dikhe
+    const docRef = doc(db, "products", id);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) { alert("Product nahi mila"); return; }
+    const cur = docSnap.data();
+
+    const name = prompt("Product Name", cur.name || ""); if(name===null) return;
+    const price = prompt("Price", cur.price || ""); if(price===null) return;
+    const offerPrice = prompt("Offer Price", cur.offerPrice || cur.price || ""); if(offerPrice===null) return;
+    const category = prompt("Category", cur.category || "Other"); if(category===null) return;
+    const order = prompt("Display Order - 1 = Sabse Upar (Chota number = top pe)", cur.order || 1); if(order===null) return;
+
+    await updateDoc(docRef, {
+      name: name,
+      category: category,
+      price: Number(price),
+      offerPrice: Number(offerPrice),
+      order: Number(order)
+    });
+    alert("✅ Product Updated - Order: " + order);
+    loadProducts();
+  } catch(e){ 
+    alert("❌ " + e.message); 
+  }
 };
 window.deleteProduct = async function(id){
   if(!confirm("Delete this product?")) return;
