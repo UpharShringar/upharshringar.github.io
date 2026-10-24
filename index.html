@@ -346,9 +346,10 @@ window.loadProducts = async function(){
     const validSizes=p.sizes? p.sizes.filter(s=>s&&s.size&&String(s.size).trim()!=="") : [];
     const first=validSizes.length>0?validSizes[0]:{size:"",price:p.price,offer:p.offerPrice||p.price};
     if(isAdmin && adminList){ adminList.innerHTML+=`<div style="background:white; padding:8px; margin:5px 0; display:flex; gap:8px; align-items:center;"><img src="${p.image}" style="width:40px; height:40px; object-fit:contain;"><span style="flex:1;">${p.name} (Order:${p.order||999})</span><button onclick="editProduct('${p.id}')" style="background:blue; color:white;">✏️</button><button onclick="deleteProduct('${p.id}')" style="background:red; color:white;">🗑️</button></div>`; }
-    let discount = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
+let discount = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
+let offTag = first.offer < first.price ? '<div style="position:absolute;top:6px;left:6px;background:#e91e63;color:white;padding:2px 6px;border-radius:3px;font-size:10px;z-index:2;">' + discount + '% OFF</div>' : '';
 products.innerHTML+=`<div class="card" data-product-id="${doc.id}" onclick="openProductDetail('${doc.id}')">
-${first.offer<first.price?`<div style="position:absolute;top:6px;left:6px;background:#e91e63;color:white;padding:2px 6px;border-radius:3px;font-size:10px;z-index:2;">${discount}% OFF</div>`:""}
+${offTag}
 <img src="${p.image}" loading="lazy">
 <h3>${p.name}</h3>
 <p style="font-size:11px; color:gray;">${p.category||''}</p>
