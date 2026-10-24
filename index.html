@@ -346,27 +346,17 @@ window.loadProducts = async function(){
     const validSizes=p.sizes? p.sizes.filter(s=>s&&s.size&&String(s.size).trim()!=="") : [];
     const first=validSizes.length>0?validSizes[0]:{size:"",price:p.price,offer:p.offerPrice||p.price};
     if(isAdmin && adminList){ adminList.innerHTML+=`<div style="background:white; padding:8px; margin:5px 0; display:flex; gap:8px; align-items:center;"><img src="${p.image}" style="width:40px; height:40px; object-fit:contain;"><span style="flex:1;">${p.name} (Order:${p.order||999})</span><button onclick="editProduct('${p.id}')" style="background:blue; color:white;">✏️</button><button onclick="deleteProduct('${p.id}')" style="background:red; color:white;">🗑️</button></div>`; }
-    products.innerHTML+=`<div class="card" data-product-id="${doc.id}" style="background:#fff; border-radius:12px; padding:12px; position:relative;">
-<div style="position:relative;">
-<button onclick="shareProduct('${doc.id}', '${p.name}', ${first.offer})" style="position:absolute; top:8px; right:8px; z-index:10; background:white; border:none; width:40px; height:40px; border-radius:50%; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="black"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-</button>
-${first.offer<first.price?`<div style="position:absolute;top:10px;left:10px;background:red;color:white;padding:4px 8px;border-radius:5px;font-size:11px;">🔥 SALE</div>`:""}
-<img src="${p.image}" style="width:100%; height:220px; object-fit:contain;">
-<h3 style="margin:10px 0; font-size:16px;">${p.name}</h3>
-<div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin:8px 0;">
-${validSizes.map(s=>`<button onclick="document.getElementById('selected_${doc.id}').value='${s.size}'; document.getElementById('selectedOffer_${doc.id}').value='${s.offer}'; document.getElementById('mrp_${doc.id}').innerHTML='₹${s.price}'; document.getElementById('offer_${doc.id}').innerHTML='₹${s.offer}';" style="padding:5px 12px; border:1px solid #e91e63; border-radius:20px; background:#fff; color:#000;">${s.size}</button>`).join("")}
+    let discount = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
+products.innerHTML+=`<div class="card" data-product-id="${doc.id}" onclick="openProductDetail('${doc.id}')">
+${first.offer<first.price?`<div style="position:absolute;top:6px;left:6px;background:#e91e63;color:white;padding:2px 6px;border-radius:3px;font-size:10px;z-index:2;">${discount}% OFF</div>`:""}
+<img src="${p.image}" loading="lazy">
+<h3>${p.name}</h3>
+<p style="font-size:11px; color:gray;">${p.category||''}</p>
+<div style="margin-top:4px;">
+<span style="font-size:14px;font-weight:bold;">₹${first.offer}</span>
+<span style="text-decoration:line-through; color:gray; font-size:11px; margin-left:4px;">₹${first.price}</span>
 </div>
-<p id="mrp_${doc.id}" style="text-decoration:line-through; color:gray; margin:4px 0; font-size:13px;">₹${first.price}</p>
-<p id="offer_${doc.id}" style="color:#e91e63; font-size:18px; font-weight:bold; margin:4px 0;">₹${first.offer}</p>
-<input type="hidden" id="selected_${doc.id}" value="${first.size}">
-<input type="hidden" id="selectedOffer_${doc.id}" value="${first.offer}">
-<div style="display:flex; justify-content:center; align-items:center; gap:15px; margin:8px 0;"><button onclick="let q=document.getElementById('qty_${doc.id}'); if(parseInt(q.innerText)>1) q.innerText=parseInt(q.innerText)-1" style="width:32px; height:32px; border-radius:50%; border:1px solid #e91e63; background:pink;">-</button><span id="qty_${doc.id}" style="font-weight:bold;">1</span><button onclick="let q=document.getElementById('qty_${doc.id}'); q.innerText=parseInt(q.innerText)+1" style="width:32px; height:32px; border-radius:50%; border:1px solid #e91e63; background:#e91e63; color:white;">+</button></div>
-<button onclick="let q=parseInt(document.getElementById('qty_${doc.id}').innerText)||1; addToCart('${p.name} ('+document.getElementById('selected_${doc.id}').value+')', Number(document.getElementById('selectedOffer_${doc.id}').value), q)" style="margin-top:8px;width:100%;padding:10px;background:#e91e63;color:white;border:none;border-radius:5px;">🛒 Add to Cart</button>
-<button onclick="let q=parseInt(document.getElementById('qty_${doc.id}').innerText)||1; buyNow('${p.name} ('+document.getElementById('selected_${doc.id}').value+')', Number(document.getElementById('selectedOffer_${doc.id}').value), q)" style="margin-top:8px;width:100%;padding:10px;background:#4CAF50;color:white;border:none;border-radius:5px;">⚡ Buy Now</button>
 </div>`;
-  });
-}
 window.editProduct = async function(id){
   const name=prompt("Product Name"); 
   if(name===null) return;
