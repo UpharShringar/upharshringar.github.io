@@ -478,7 +478,7 @@ loadProducts(); loadDashboard(); handleSharedProduct();
 
 <div id="productDetailPage" style="display:none;position:fixed;inset:0;background:#f1f2f4;z-index:9999999;overflow-y:auto;">
  <div style="background:white;padding:10px;display:flex;align-items:center;gap:10px;position:sticky;top:0;border-bottom:1px solid #eee;">
-  <div onclick="closeProductDetail()" style="font-size:22px;cursor:pointer;padding:5px 12px;">←</div>
+  <div onclick="window.closeProductDetail()" style="font-size:22px;cursor:pointer;padding:5px 12px;border:1px solid #eee;border-radius:50%;width:35px;height:35px;display:flex;align-items:center;justify-content:center;background:white;">←</div>
   <div style="font-weight:bold;font-size:15px;" id="detailHeaderTitle">Product</div>
  </div>
  <div style="background:#fff;padding:10px;position:relative;">
