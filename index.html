@@ -313,42 +313,30 @@ window.uploadProduct = async function(){
   let price3 = document.getElementById("price3").value;
   let offer3 = document.getElementById("offer3").value;
   let category = document.getElementById("productCategory").value;
-  
   let f1 = document.getElementById("productImage").files[0];
-  let f2 = document.getElementById("productImage2") ? document.getElementById("productImage2").files[0] : null;
-  let f3 = document.getElementById("productImage3") ? document.getElementById("productImage3").files[0] : null;
-  let f4 = document.getElementById("productImage4") ? document.getElementById("productImage4").files[0] : null;
-  let f5 = document.getElementById("productImage5") ? document.getElementById("productImage5").files[0] : null;
+  let f2 = document.getElementById("productImage2").files[0];
+  let f3 = document.getElementById("productImage3").files[0];
+  let f4 = document.getElementById("productImage4").files[0];
+  let f5 = document.getElementById("productImage5").files[0];
   let allFiles = [f1,f2,f3,f4,f5].filter(x=>x);
-
   if(!name || !size1 || !price1 || allFiles.length==0){ alert("Name, Size1, Price1 aur 1 Photo toh chahiye!"); return; }
-
-  alert(allFiles.length + " photo upload ho raha hai... wait karo");
-  
+  alert(allFiles.length + " photo upload ho raha hai... wait");
   try{
     let urls = [];
     for(let i=0;i<allFiles.length;i++){
-      let fd = new FormData();
-      fd.append("file", allFiles[i]);
-      fd.append("upload_preset","uphar_upload");
+      let fd = new FormData(); fd.append("file", allFiles[i]); fd.append("upload_preset","uphar_upload");
       let res = await fetch("https://api.cloudinary.com/v1_1/rms6dpzs/image/upload",{method:"POST",body:fd});
-      let d = await res.json();
-      if(d.secure_url) urls.push(d.secure_url);
+      let d = await res.json(); if(d.secure_url) urls.push(d.secure_url);
     }
     if(urls.length==0){ alert("Image upload fail"); return; }
-    
     await addDoc(collection(db,"products"),{
-      name:name, category:category,
-      price:Number(price1), offerPrice:Number(offer1||price1),
+      name:name, category:category, price:Number(price1), offerPrice:Number(offer1||price1),
       sizes:[size1,size2,size3].map((s,i)=>{ let p=[price1,price2,price3][i]; let o=[offer1,offer2,offer3][i]; return s&&s.trim()?{size:s.trim(),price:Number(p||0),offer:Number(o||p||0)}:null; }).filter(Boolean),
       image:urls[0], images:urls, stock:100, createdAt:new Date().toISOString(), order:Number(productOrder)||999, status:"active"
     });
-    
-    alert("✅ Ho gaya! "+urls.length+" photo upload hua");
-    loadProducts();
+    alert("✅ "+urls.length+" photo upload hua"); loadProducts();
   }catch(e){ alert("Error: "+e.message); }
 };
-
 window.loadProducts = async function(){
   const snap=await getDocs(collection(db,"products"));
   const products=document.getElementById("products");
@@ -426,44 +414,48 @@ async function loadDashboard(){
 let currentDetailProduct = null;
 let currentSelectedSize = null;
 window.openProductDetail = function(docId){
-  try{
-    const p = globalProducts.find(x=>x.id===docId);
-    if(!p){ alert('Product not found: '+docId); return; }
-    currentDetailProduct = p;
-    const validSizes = p.sizes ? p.sizes.filter(s=>s&&s.size&&String(s.size).trim()!=="") : [];
-    const first = validSizes.length>0?validSizes[0]:{size:'', price:p.price, offer:p.offerPrice||p.price};
-    currentSelectedSize = first;
-    document.getElementById('detailMainImg').src = p.image;
-    document.getElementById('detailTitle').innerText = p.name;
-    document.getElementById('detailCategory').innerText = p.category||'';
-    document.getElementById('detailHeaderTitle').innerText = p.name;
-    document.getElementById('detailOfferPrice').innerText = '₹'+first.offer;
-    document.getElementById('detailMrp').innerText = '₹'+first.price;
-    let disc = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
-    document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
-    document.getElementById('detailQty').innerText = '1';
-    let html = '';
-    validSizes.forEach(s=>{
-     html += '<button data-size=\''+s.size+'\' onclick="window.selectVariant(\''+s.size+'\','+s.price+','+s.offer+')" style="padding:8px 16px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;margin:3px;min-width:50px;">'+s.size+'</button>'; 
-    });
-    if(html==='') html='<span style="color:gray;">Default</span>';
-    document.getElementById('detailVariants').innerHTML = html;
-    document.getElementById('detailAddCart').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; addToCart(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); toggleCart(); };
-    document.getElementById('detailBuyNow').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; buyNow(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); };
-    document.getElementById('productDetailPage').style.display='block';
-  }catch(e){ alert('Error: '+e.message); console.log(e); }
+  const p = globalProducts.find(x=>x.id===docId);
+  if(!p){ alert('Product not found'); return; }
+  currentDetailProduct = p;
+  const validSizes = p.sizes ? p.sizes.filter(s=>s&&s.size) : [];
+  const first = validSizes.length>0?validSizes[0]:{size:'', price:p.price, offer:p.offerPrice||p.price};
+  currentSelectedSize = first;
+  let allImages = p.images && p.images.length>0 ? p.images : [p.image];
+  window.currentDetailImages = allImages; window.currentImgIndex = 0;
+  document.getElementById('detailMainImg').src = allImages[0];
+  document.getElementById('detailTitle').innerText = p.name;
+  document.getElementById('detailCategory').innerText = p.category||'';
+  document.getElementById('detailHeaderTitle').innerText = p.name;
+  document.getElementById('detailOfferPrice').innerText = '₹'+first.offer;
+  document.getElementById('detailMrp').innerText = '₹'+first.price;
+  let disc = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
+  document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
+  document.getElementById('detailQty').innerText = '1';
+  let html = '';
+  validSizes.forEach(s=>{ html += `<button data-size="${s.size}" onclick="window.selectVariant('${s.size}', ${s.price}, ${s.offer})" style="padding:8px 16px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;margin:3px;min-width:50px;">${s.size}</button>`; });
+  if(html==='') html='<span>Default</span>';
+  document.getElementById('detailVariants').innerHTML = html;
+  let dotsHtml = ''; let thumbsHtml = '';
+  allImages.forEach((img, idx)=>{
+    dotsHtml += `<span style="width:${idx===0?'18px':'8px'};height:8px;border-radius:10px;background:${idx===0?'#2874f0':'#ccc'};display:inline-block;margin:3px;" onclick="window.showDetailImage(${idx})"></span>`;
+    thumbsHtml += `<img src="${img}" style="width:60px;height:60px;object-fit:contain;border:${idx===0?'2px solid #2874f0':'1px solid #e0e0e0'};border-radius:6px;margin:3px;cursor:pointer;" onclick="window.showDetailImage(${idx})">`;
+  });
+  document.getElementById('detailSliderDots').innerHTML = dotsHtml;
+  document.getElementById('detailThumbs').innerHTML = thumbsHtml;
+  document.getElementById('detailAddCart').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; addToCart(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); toggleCart(); };
+  document.getElementById('detailBuyNow').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; buyNow(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); };
+  document.getElementById('productDetailPage').style.display='block';
+  setTimeout(()=>{ if(validSizes.length>0) window.selectVariant(validSizes[0].size, validSizes[0].price, validSizes[0].offer); },100);
 }
-  window.showDetailImage = function(idx){
+
+window.showDetailImage = function(idx){
   if(!window.currentDetailImages || !window.currentDetailImages[idx]) return;
   window.currentImgIndex = idx;
   document.getElementById('detailMainImg').src = window.currentDetailImages[idx];
-  // dots update
-  let dots = document.querySelectorAll('#detailSliderDots div');
-  dots.forEach((d,i)=>{ d.style.background = i===idx ? '#2874f0' : '#ccc'; });
-  let thumbs = document.querySelectorAll('#detailThumbs img');
-  thumbs.forEach((t,i)=>{ t.style.border = i===idx ? '2px solid #2874f0' : '1px solid #e0e0e0'; });
+  document.querySelectorAll('#detailSliderDots span').forEach((d,i)=>{ d.style.background = i===idx ? '#2874f0' : '#ccc'; d.style.width = i===idx ? '18px' : '8px'; });
+  document.querySelectorAll('#detailThumbs img').forEach((t,i)=>{ t.style.border = i===idx ? '2px solid #2874f0' : '1px solid #e0e0e0'; });
 }
-window.closeProductDetail = function(){ document.getElementById('productDetailPage').style.display='none'; }
+
 window.selectVariant = function(size, price, offer){
   currentSelectedSize={size:size, price:price, offer:offer};
   document.getElementById('detailOfferPrice').innerText='₹'+offer;
@@ -472,10 +464,10 @@ window.selectVariant = function(size, price, offer){
   document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
   document.querySelectorAll('#detailVariants button').forEach(b=>{
     let s = b.getAttribute('data-size') || b.innerText.trim();
-    if(s.trim() == String(size).trim()){
-      b.style.borderColor='#2874f0'; b.style.borderWidth='2px'; b.style.background='#e8f0fe'; b.style.color='#2874f0'; b.style.fontWeight='bold';
-    } else {
-      b.style.borderColor='#e0e0e0'; b.style.borderWidth='1px'; b.style.background='#fff'; b.style.color='black'; b.style.fontWeight='normal';
+    if(s.trim()==String(size).trim()){
+      b.style.borderColor='#2874f0'; b.style.background='#e8f0fe'; b.style.color='#2874f0'; b.style.fontWeight='bold'; b.style.borderWidth='2px';
+    }else{
+      b.style.borderColor='#e0e0e0'; b.style.background='#fff'; b.style.color='#212121'; b.style.fontWeight='normal'; b.style.borderWidth='1px';
     }
   });
 }
