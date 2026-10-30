@@ -300,6 +300,54 @@ window.placeOrder = async function(){
     alert("✅ Order Placed Successfully!"); clearCart(); document.getElementById("fullname").value=""; document.getElementById("mobile").value=""; document.getElementById("address").value=""; document.getElementById("paymentQR").style.display="none"; isUPIPaid=false; toggleCart();
   }catch(e){ alert("❌ "+e.message); }
 };
+window.uploadProduct = async function(){
+  let name = document.getElementById("productName").value;
+  let productOrder = document.getElementById("productOrder").value;
+  let size1 = document.getElementById("size1").value;
+  let price1 = document.getElementById("price1").value;
+  let offer1 = document.getElementById("offer1").value;
+  let size2 = document.getElementById("size2").value;
+  let price2 = document.getElementById("price2").value;
+  let offer2 = document.getElementById("offer2").value;
+  let size3 = document.getElementById("size3").value;
+  let price3 = document.getElementById("price3").value;
+  let offer3 = document.getElementById("offer3").value;
+  let category = document.getElementById("productCategory").value;
+  
+  let f1 = document.getElementById("productImage").files[0];
+  let f2 = document.getElementById("productImage2") ? document.getElementById("productImage2").files[0] : null;
+  let f3 = document.getElementById("productImage3") ? document.getElementById("productImage3").files[0] : null;
+  let f4 = document.getElementById("productImage4") ? document.getElementById("productImage4").files[0] : null;
+  let f5 = document.getElementById("productImage5") ? document.getElementById("productImage5").files[0] : null;
+  let allFiles = [f1,f2,f3,f4,f5].filter(x=>x);
+
+  if(!name || !size1 || !price1 || allFiles.length==0){ alert("Name, Size1, Price1 aur 1 Photo toh chahiye!"); return; }
+
+  alert(allFiles.length + " photo upload ho raha hai... wait karo");
+  
+  try{
+    let urls = [];
+    for(let i=0;i<allFiles.length;i++){
+      let fd = new FormData();
+      fd.append("file", allFiles[i]);
+      fd.append("upload_preset","uphar_upload");
+      let res = await fetch("https://api.cloudinary.com/v1_1/rms6dpzs/image/upload",{method:"POST",body:fd});
+      let d = await res.json();
+      if(d.secure_url) urls.push(d.secure_url);
+    }
+    if(urls.length==0){ alert("Image upload fail"); return; }
+    
+    await addDoc(collection(db,"products"),{
+      name:name, category:category,
+      price:Number(price1), offerPrice:Number(offer1||price1),
+      sizes:[size1,size2,size3].map((s,i)=>{ let p=[price1,price2,price3][i]; let o=[offer1,offer2,offer3][i]; return s&&s.trim()?{size:s.trim(),price:Number(p||0),offer:Number(o||p||0)}:null; }).filter(Boolean),
+      image:urls[0], images:urls, stock:100, createdAt:new Date().toISOString(), order:Number(productOrder)||999, status:"active"
+    });
+    
+    alert("✅ Ho gaya! "+urls.length+" photo upload hua");
+    loadProducts();
+  }catch(e){ alert("Error: "+e.message); }
+};
 
 window.loadProducts = async function(){
   const snap=await getDocs(collection(db,"products"));
