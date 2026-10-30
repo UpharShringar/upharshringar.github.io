@@ -423,7 +423,7 @@ window.openProductDetail = function(docId){
     document.getElementById('detailQty').innerText = '1';
     let html = '';
     validSizes.forEach(s=>{
-      html += '<button onclick="selectVariant(\''+s.size+'\','+s.price+','+s.offer+')" style="padding:6px 14px;border:1px solid #e0e0e0;border-radius:6px;background:#fff;margin:2px;">'+s.size+'</button>';
+     html += '<button data-size=\''+s.size+'\' onclick="window.selectVariant(\''+s.size+'\','+s.price+','+s.offer+')" style="padding:8px 16px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;margin:3px;min-width:50px;">'+s.size+'</button>'; 
     });
     if(html==='') html='<span style="color:gray;">Default</span>';
     document.getElementById('detailVariants').innerHTML = html;
@@ -437,6 +437,16 @@ window.selectVariant = function(size, price, offer){
   currentSelectedSize={size:size, price:price, offer:offer};
   document.getElementById('detailOfferPrice').innerText='₹'+offer;
   document.getElementById('detailMrp').innerText='₹'+price;
+  let disc = price>0 ? Math.round((price-offer)/price*100) : 0;
+  document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
+  document.querySelectorAll('#detailVariants button').forEach(b=>{
+    let s = b.getAttribute('data-size') || b.innerText.trim();
+    if(s.trim() == String(size).trim()){
+      b.style.borderColor='#2874f0'; b.style.borderWidth='2px'; b.style.background='#e8f0fe'; b.style.color='#2874f0'; b.style.fontWeight='bold';
+    } else {
+      b.style.borderColor='#e0e0e0'; b.style.borderWidth='1px'; b.style.background='#fff'; b.style.color='black'; b.style.fontWeight='normal';
+    }
+  });
 }
 window.changeDetailQty = function(d){ let el=document.getElementById('detailQty'); let q=parseInt(el.innerText)+d; if(q<1)q=1; el.innerText=q; }
 
