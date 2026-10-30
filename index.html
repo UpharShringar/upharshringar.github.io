@@ -437,6 +437,16 @@ window.openProductDetail = function(docId){
     document.getElementById('productDetailPage').style.display='block';
   }catch(e){ alert('Error: '+e.message); console.log(e); }
 }
+  window.showDetailImage = function(idx){
+  if(!window.currentDetailImages || !window.currentDetailImages[idx]) return;
+  window.currentImgIndex = idx;
+  document.getElementById('detailMainImg').src = window.currentDetailImages[idx];
+  // dots update
+  let dots = document.querySelectorAll('#detailSliderDots div');
+  dots.forEach((d,i)=>{ d.style.background = i===idx ? '#2874f0' : '#ccc'; });
+  let thumbs = document.querySelectorAll('#detailThumbs img');
+  thumbs.forEach((t,i)=>{ t.style.border = i===idx ? '2px solid #2874f0' : '1px solid #e0e0e0'; });
+}
 window.closeProductDetail = function(){ document.getElementById('productDetailPage').style.display='none'; }
 window.selectVariant = function(size, price, offer){
   currentSelectedSize={size:size, price:price, offer:offer};
@@ -459,25 +469,31 @@ loadProducts(); loadDashboard(); handleSharedProduct();
 </script>
 
 <div id="productDetailPage" style="display:none;position:fixed;inset:0;background:#f1f2f4;z-index:9999999;overflow-y:auto;">
-  <div style="background:white;padding:10px;display:flex;align-items:center;gap:10px;position:sticky;top:0;border-bottom:1px solid #eee;z-index:10;">
-    <div onclick="closeProductDetail()" style="font-size:22px;cursor:pointer;padding:5px 12px;">←</div>
-    <div style="font-weight:bold;font-size:15px;" id="detailHeaderTitle">Product</div>
+ <div style="background:white;padding:10px;display:flex;align-items:center;gap:10px;position:sticky;top:0;border-bottom:1px solid #eee;">
+  <div onclick="closeProductDetail()" style="font-size:22px;cursor:pointer;padding:5px 12px;">←</div>
+  <div style="font-weight:bold;font-size:15px;" id="detailHeaderTitle">Product</div>
+ </div>
+ <div style="background:#fff;padding:10px;position:relative;">
+  <img id="detailMainImg" src="" style="width:100%;height:380px;object-fit:contain;" onclick="let n=(window.currentImgIndex+1)%(window.currentDetailImages?.length||1); window.showDetailImage(n);">
+  <div id="detailSliderDots" style="text-align:center;padding:8px;"></div>
+  <div id="detailThumbs" style="display:flex;gap:6px;overflow-x:auto;padding:6px;"></div>
+ </div>
+ <div style="background:white;padding:12px;margin-top:8px;padding-bottom:90px;">
+  <h2 id="detailTitle" style="font-size:16px;"></h2>
+  <p id="detailCategory" style="color:gray;font-size:12px;margin-top:4px;"></p>
+  <p style="font-weight:bold;margin-top:12px;font-size:14px;">Select Variant:</p>
+  <div id="detailVariants" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+  <div style="margin-top:15px;"><span id="detailOfferPrice" style="font-size:22px;font-weight:bold;"></span><span id="detailMrp" style="margin-left:8px;color:gray;text-decoration:line-through;"></span><span id="detailDiscount" style="margin-left:8px;color:green;font-weight:bold;"></span></div>
+  <div style="display:flex;align-items:center;gap:15px;margin:15px 0;border:1px solid #eee;padding:8px;width:130px;border-radius:6px;">
+    <button onclick="changeDetailQty(-1)" style="width:30px;height:30px;border:none;background:#f0f0f0;border-radius:50%;">-</button>
+    <span id="detailQty">1</span>
+    <button onclick="changeDetailQty(1)" style="width:30px;height:30px;border:none;background:#f0f0f0;border-radius:50%;">+</button>
   </div>
-  <div style="background:#fff;padding:10px;position:relative;">
-    <img id="detailMainImg" src="" style="width:100%;height:380px;object-fit:contain;">
-  </div>
-  <div style="background:white;padding:12px;margin-top:8px;padding-bottom:90px;">
-    <h2 id="detailTitle" style="font-size:16px;"></h2>
-    <p id="detailCategory" style="color:gray;font-size:12px;margin-top:4px;"></p>
-    <p style="font-weight:bold;margin-top:12px;font-size:14px;">Select Variant:</p>
-    <div id="detailVariants" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
-    <div style="margin-top:15px;"><span id="detailOfferPrice" style="font-size:22px;font-weight:bold;"></span><span id="detailMrp" style="text-decoration:line-through;color:gray;margin-left:8px;"></span><span id="detailDiscount" style="color:green;margin-left:8px;font-weight:bold;"></span></div>
-    <div style="display:flex;align-items:center;gap:15px;margin:15px 0;border:1px solid #eee;padding:8px;width:130px;border-radius:8px;"><button onclick="changeDetailQty(-1)" style="width:30px;height:30px;border-radius:50%;border:1px solid #ccc;background:#fff;">-</button><span id="detailQty" style="font-weight:bold;">1</span><button onclick="changeDetailQty(1)" style="width:30px;height:30px;border-radius:50%;background:#e91e63;color:white;border:1px solid #e91e63;">+</button></div>
-  </div>
-  <div style="position:fixed;bottom:0;left:0;right:0;display:flex;background:white;padding:8px;box-shadow:0 -2px 10px rgba(0,0,0,.1);">
-    <button id="detailAddCart" style="flex:1;padding:14px;margin-right:8px;background:white;border:1px solid #eee;border-radius:4px;font-weight:bold;">🛒 Add to Cart</button>
-    <button id="detailBuyNow" style="flex:1.2;padding:14px;background:#fb641b;color:white;border:none;border-radius:4px;font-weight:bold;">Buy Now</button>
-  </div>
+ </div>
+ <div style="position:fixed;bottom:0;left:0;right:0;display:flex;background:white;padding:8px;box-shadow:0 -2px 10px rgba(0,0,0,0.1);">
+  <button id="detailAddCart" style="flex:1;padding:14px;margin-right:8px;background:white;border:1px solid #eee;border-radius:4px;font-weight:bold;">🛒 Add to Cart</button>
+  <button id="detailBuyNow" style="flex:1.2;padding:14px;background:#fb641b;color:white;border:none;border-radius:4px;font-weight:bold;">Buy Now</button>
+ </div>
 </div>
 
 </body>
