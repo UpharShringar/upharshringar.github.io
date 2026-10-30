@@ -332,8 +332,10 @@ window.loadProducts = async function(){
   const snap=await getDocs(collection(db,"products"));
   const products=document.getElementById("products");
   const adminList=document.getElementById("adminProductList");
+  let globalProducts = [];
   let allDocs=[]; snap.forEach(d=>allDocs.push({id:d.id,...d.data()}));
   allDocs.sort((a,b)=>(a.order||999)-(b.order||999));
+  globalProducts = allDocs;
   const selectedCategory=document.getElementById("filterCategory")?document.getElementById("filterCategory").value:"";
   const searchText=document.getElementById("searchBox")?.value.toLowerCase()||"";
   const isAdmin=window.isAdmin===true;
