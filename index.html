@@ -358,6 +358,46 @@ ${offTag}
 </div>`;
   });
 }
+  window.openProductDetail = function(docId){
+  const p = globalProducts.find(x=>x.id===docId);
+  if(!p) return;
+  const validSizes = p.sizes ? p.sizes.filter(s=>s&&s.size&&String(s.size).trim()!=="") : [];
+  const first = validSizes.length>0?validSizes[0]:{size:'', price:p.price, offer:p.offerPrice||p.price};
+  window.currentSelectedSize = first;
+  document.getElementById('detailMainImg').src = p.image;
+  document.getElementById('detailTitle').innerText = p.name;
+  document.getElementById('detailHeaderTitle').innerText = p.name;
+  document.getElementById('detailOfferPrice').innerText = '₹'+first.offer;
+  document.getElementById('detailMrp').innerText = '₹'+first.price;
+  let disc = first.price>0 ? Math.round((first.price-first.offer)/first.price*100) : 0;
+  document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
+  document.getElementById('detailQty').innerText = '1';
+  let html='';
+  validSizes.forEach(s=>{
+    html+= `<button onclick="window.selectVariant('${s.size}', ${s.price}, ${s.offer})" style="padding:6px 14px;border:1px solid #e0e0e0;border-radius:6px;background:#fff;margin:2px;">${s.size}</button>`;
+  });
+  document.getElementById('detailVariants').innerHTML = html || 'Default';
+  document.getElementById('productDetailPage').style.display='block';
+}
+
+window.selectVariant = function(size, price, offer){
+  window.currentSelectedSize={size,price,offer};
+  document.getElementById('detailOfferPrice').innerText='₹'+offer;
+  document.getElementById('detailMrp').innerText='₹'+price;
+  let disc = price>0 ? Math.round((price-offer)/price*100) : 0;
+  document.getElementById('detailDiscount').innerText = disc>0 ? disc+'% off' : '';
+  document.querySelectorAll('#detailVariants button').forEach(b=>{
+    if(b.innerText.trim()==String(size).trim()){
+      b.style.borderColor='#e91e63'; b.style.background='#fff0f5'; b.style.color='#e91e63'; b.style.fontWeight='bold';
+    } else {
+      b.style.borderColor='#e0e0e0'; b.style.background='#fff'; b.style.color='black'; b.style.fontWeight='normal';
+    }
+  });
+}
+
+window.closeProductDetail = function(){ document.getElementById('productDetailPage').style.display='none'; }
+window.changeDetailQty = function(d){ let el=document.getElementById('detailQty'); let q=parseInt(el.innerText)+d; if(q<1)q=1; el.innerText=q; }
+
 window.editProduct = async function(id){
   const name=prompt("Product Name"); 
   if(name===null) return;
