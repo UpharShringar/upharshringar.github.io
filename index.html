@@ -442,6 +442,16 @@ window.openProductDetail = function(docId){
   });
   document.getElementById('detailSliderDots').innerHTML = dotsHtml;
   document.getElementById('detailThumbs').innerHTML = thumbsHtml;
+  let colorsDiv = document.getElementById('detailColors');
+let colorsSec = document.getElementById('detailColorsSection');
+if(p.colors && p.colors.length>0 && colorsDiv){
+  colorsSec.style.display='block';
+  let cHtml='';
+  p.colors.forEach((c)=>{
+    cHtml += `<button data-color="${c}" onclick="window.selectColor('${c}')" style="padding:8px 14px;border:1px solid #e0e0e0;border-radius:20px;background:#fff;margin:3px;">${c}</button>`;
+  });
+  colorsDiv.innerHTML=cHtml;
+}else if(colorsSec){ colorsSec.style.display='none'; }
   document.getElementById('detailAddCart').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; addToCart(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); toggleCart(); };
   document.getElementById('detailBuyNow').onclick = function(){ let q=parseInt(document.getElementById('detailQty').innerText)||1; buyNow(p.name+' ('+currentSelectedSize.size+')', Number(currentSelectedSize.offer), q); closeProductDetail(); };
   document.getElementById('productDetailPage').style.display='block';
@@ -471,6 +481,16 @@ window.selectVariant = function(size, price, offer){
     }
   });
 }
+ window.selectColor = function(color){
+  document.querySelectorAll('#detailColors button').forEach(b=>{
+    if(b.getAttribute('data-color')==color){
+      b.style.borderColor='#2874f0'; b.style.background='#e8f0fe'; b.style.color='#2874f0'; b.style.borderWidth='2px'; b.style.fontWeight='bold';
+    }else{
+      b.style.borderColor='#e0e0e0'; b.style.background='#fff'; b.style.color='#212121'; b.style.borderWidth='1px'; b.style.fontWeight='normal';
+    }
+  });
+  if(currentSelectedSize) currentSelectedSize.color = color;
+} 
 window.changeDetailQty = function(d){ let el=document.getElementById('detailQty'); let q=parseInt(el.innerText)+d; if(q<1)q=1; el.innerText=q; }
 
 loadProducts(); loadDashboard(); handleSharedProduct();
@@ -491,6 +511,10 @@ loadProducts(); loadDashboard(); handleSharedProduct();
   <p id="detailCategory" style="color:gray;font-size:12px;margin-top:4px;"></p>
   <p style="font-weight:bold;margin-top:12px;font-size:14px;">Select Variant:</p>
   <div id="detailVariants" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+   <div id="detailColorsSection" style="margin-top:12px;display:none;">
+  <p style="font-weight:bold;font-size:14px;">Select Colour:</p>
+  <div id="detailColors" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+</div>
   <div style="margin-top:15px;"><span id="detailOfferPrice" style="font-size:22px;font-weight:bold;"></span><span id="detailMrp" style="margin-left:8px;color:gray;text-decoration:line-through;"></span><span id="detailDiscount" style="margin-left:8px;color:green;font-weight:bold;"></span></div>
   <div style="display:flex;align-items:center;gap:15px;margin:15px 0;border:1px solid #eee;padding:8px;width:130px;border-radius:6px;">
     <button onclick="window.changeDetailQty(-1)"
